@@ -5,9 +5,9 @@ public class Habilidad {
     private String nombre;
     private int danio_base;
     private int usos_maximos;
-    private Clase id_clase;
+    private int id_clase;
 
-    public Habilidad(int id, String nombre, int danio_base, int usos_maximos, Clase id_clase) {
+    public Habilidad(int id, String nombre, int danio_base, int usos_maximos, int id_clase) {
         this.id = id;
         this.nombre = nombre;
         this.danio_base = danio_base;
@@ -47,11 +47,11 @@ public class Habilidad {
         this.usos_maximos = usos_maximos;
     }
 
-    public Clase getId_clase() {
+    public int getId_clase() {
         return id_clase;
     }
 
-    public void setId_clase(Clase id_clase) {
+    public void setId_clase(int id_clase) {
         this.id_clase = id_clase;
     }
 }
