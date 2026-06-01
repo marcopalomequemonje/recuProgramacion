@@ -13,6 +13,7 @@ public class ConexionDB {
         try {
             return DriverManager.getConnection(URL,USER,PASSWORD);
         } catch (SQLException e) {
+            System.out.println("Error en la conexion");
             throw new SQLException("Error en la conexión a la BD",e);
         }
     }

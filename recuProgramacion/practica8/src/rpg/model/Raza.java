@@ -44,5 +44,15 @@ public class Raza {
     public void setBonificador_fuerza(int bonificador_fuerza) {
         this.bonificador_fuerza = bonificador_fuerza;
     }
+
+    @Override
+    public String toString() {
+        return "Raza{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", bonificador_vida=" + bonificador_vida +
+                ", bonificador_fuerza=" + bonificador_fuerza +
+                '}';
+    }
 }
 
