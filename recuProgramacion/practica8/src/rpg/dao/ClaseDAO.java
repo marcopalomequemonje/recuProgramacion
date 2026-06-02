@@ -1,4 +1,4 @@
-package rpg.DAO;
+package rpg.dao;
 
 import rpg.model.Clase;
 import rpg.utils.ConexionDB;
