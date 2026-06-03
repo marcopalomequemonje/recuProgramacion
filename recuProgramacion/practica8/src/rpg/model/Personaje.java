@@ -109,4 +109,20 @@ public class Personaje {
     public void setPersonajes_habilidades(List<Habilidad> personajes_habilidades) {
         this.personajes_habilidades = personajes_habilidades;
     }
+
+    @Override
+    public String toString() {
+        return "Personaje{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", nivel=" + nivel +
+                ", oro=" + oro +
+                ", vida_actual=" + vida_actual +
+                ", raza=" + raza +
+                ", clase=" + clase +
+                ", ciudad_actual=" + ciudad_actual +
+                ", inventario=" + inventario +
+                ", personajes_habilidades=" + personajes_habilidades +
+                '}';
+    }
 }

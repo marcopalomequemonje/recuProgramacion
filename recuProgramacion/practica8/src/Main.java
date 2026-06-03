@@ -1,17 +1,21 @@
 import rpg.dao.ClaseDAO;
+import rpg.dao.PersonajeDAO;
 import rpg.dao.RazaDAO;
 import rpg.model.Clase;
 import rpg.model.Raza;
 import rpg.ui.MenuGestor;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        MenuGestor menuGestor = new MenuGestor();
+    public static void main(String[] args) throws SQLException {
+        PersonajeDAO personajeDAO = new PersonajeDAO();
+        personajeDAO.findall();
+/*       MenuGestor menuGestor = new MenuGestor();
         menuGestor.menuPrincipalGestor();
-        /*
+
         ClaseDAO claseDAO = new ClaseDAO();
         List<Clase> clases = claseDAO.findAll();
         int indexclases = 0;
