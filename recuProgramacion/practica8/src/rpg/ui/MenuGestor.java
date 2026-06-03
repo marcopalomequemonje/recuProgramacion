@@ -1,6 +1,8 @@
 package rpg.ui;
 
 import rpg.dao.PersonajeDAO;
+import rpg.exception.PersonajeDAOException;
+import rpg.model.Item;
 import rpg.model.Personaje;
 
 public class MenuGestor {
@@ -33,8 +35,7 @@ public class MenuGestor {
         }
     }
 
-    public void crearPersonaje (){
-        System.out.println("VAMOS A CREAR TU PERSONAJE");
+    public void crearPersonaje () throws PersonajeDAOException {
         Personaje personaje = Vista.pedirPersonaje();
         if (personaje != null){
             PersonajeDAO personajeDAO = new PersonajeDAO();
@@ -43,8 +44,7 @@ public class MenuGestor {
         }
     }
 
-    public void viajar (){
-        System.out.println("VAMOS A VIAJAR A UNA CIUDAD");
+    public void viajar () throws PersonajeDAOException {
         Personaje personaje = Vista.pedirPersonajeViajar();
         if (personaje != null){
             PersonajeDAO personajeDAO = new PersonajeDAO();
@@ -54,7 +54,7 @@ public class MenuGestor {
     }
 
     public void comprarItems (){
-        System.out.println("VAMOS A COMPRAR ITEMS");;
+        Personaje personaje = Vista.comprarItem();
     }
 
     public void cobrarImpuestos (){

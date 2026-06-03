@@ -1,5 +1,6 @@
 package rpg.dao;
 
+import rpg.exception.PersonajeDAOException;
 import rpg.model.Ciudad;
 import rpg.model.Clase;
 import rpg.model.Personaje;
@@ -17,7 +18,7 @@ public class PersonajeDAO {
     public PersonajeDAO() {
 
     }
-    public void crearPersonaje (Personaje personaje){
+    public void crearPersonaje (Personaje personaje) throws PersonajeDAOException {
         //LE HEMOS QUITADO EL ID PORQUE EN LA DB ES AUTOINCREMENTAL
         String sql = "INSERT INTO PERSONAJES (nombre, nivel, oro, vida_actual, id_raza, id_clase, id_ciudad_actual)" +
                                     " VALUES (?,?,?,?,?,?,?)";
@@ -32,18 +33,16 @@ public class PersonajeDAO {
             preparedStatement.setInt(5,personaje.getRaza().getId());
             preparedStatement.setInt(6,personaje.getClase().getId());
             preparedStatement.setInt(7,personaje.getCiudad_actual().getId());
-            try (ResultSet resultSet = preparedStatement.executeQuery()){
+            int cambios = preparedStatement.executeUpdate();
 
-            }catch (Exception e){
-
-            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersonajeDAOException();
         }
     }
 
-    public void modificarPersonaje (Personaje personaje) {
-        String sql = "UPDATE PERSONAJE SET nombre = ?, nivel = ?, oro = ?, vida_actual = ?, id_raza = ?, id_clase = ?, id_ciudad_actual = ?";
+    public void modificarPersonaje (Personaje personaje) throws PersonajeDAOException {
+        String sql = "UPDATE PERSONAJES SET nombre = ?, nivel = ?, oro = ?, vida_actual = ?, id_raza = ?, id_clase = ?, id_ciudad_actual = ?" +
+                     " WHERE ID = ?";
         try (
                 Connection connection = ConexionDB.getConexion();
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -54,18 +53,15 @@ public class PersonajeDAO {
             preparedStatement.setInt(4,personaje.getVida_actual());
             preparedStatement.setInt(5,personaje.getRaza().getId());
             preparedStatement.setInt(6,personaje.getClase().getId());
-            preparedStatement.setInt(3,personaje.getCiudad_actual().getId());
-            try (ResultSet resultSet = preparedStatement.executeQuery()){
-
-            }catch (Exception e){
-
-            }
+            preparedStatement.setInt(7,personaje.getCiudad_actual().getId());
+            preparedStatement.setInt(8,personaje.getId());
+            int cambios = preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersonajeDAOException();
         }
     }
 
-    public List<Personaje> findall () {
+    public List<Personaje> findAll () throws PersonajeDAOException {
         String sql = "SELECT P.ID AS ID_PERSONAJE, P.NOMBRE AS NOMBRE_PERSONAJE, P.NIVEL AS NIVEL_PERSONAJE, P.ORO AS ORO_PERSONAJE, P.VIDA_ACTUAL, P.ID_RAZA AS ID_RAZA_PERSONAJE, P.ID_CLASE AS ID_CLASE_PERSONAJE, P.ID_CIUDAD_ACTUAL AS ID_CIUDAD_PERSONAJE, " +
                         "R.ID AS ID_RAZA, R.NOMBRE AS NOMBRE_RAZA, R.BONIFICADOR_VIDA, R.BONIFICADOR_FUERZA, " +
                         "CL.ID AS ID_CLASE, CL.NOMBRE AS NOMBRE_CLASE, " +
@@ -73,7 +69,7 @@ public class PersonajeDAO {
                      "FROM PERSONAJES P " +
                      "JOIN RAZAS R ON P.ID_RAZA = R.ID " +
                      "JOIN CLASES_RPG CL ON P.ID_CLASE = CL.ID " +
-                     "JOIN CIUDADES C ON P.ID_CIUDAD = C.ID";
+                     "JOIN CIUDADES C ON P.ID_CIUDAD_ACTUAL = C.ID";
         List<Personaje> personajes = new ArrayList<>();
         try (
                 Connection connection = ConexionDB.getConexion();
@@ -114,7 +110,7 @@ public class PersonajeDAO {
             }
             return personajes;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new PersonajeDAOException();
         }
     }
 }

@@ -1,12 +1,8 @@
 package rpg.ui;
 
-import rpg.dao.CiudadDAO;
-import rpg.dao.ClaseDAO;
-import rpg.dao.RazaDAO;
-import rpg.model.Ciudad;
-import rpg.model.Clase;
-import rpg.model.Personaje;
-import rpg.model.Raza;
+import rpg.dao.*;
+import rpg.exception.*;
+import rpg.model.*;
 
 import java.util.List;
 import java.util.Scanner;
@@ -27,17 +23,17 @@ public class Vista {
         try {
             opcion = Integer.parseInt(sc.nextLine());
         } catch (NumberFormatException e) {
-            throw new Exception("LA OPCIÓN DEBE SER UN NUMERO");
+            throw new OpcionNumeroException();
         }
         if (opcion < 0 || opcion > 4){
-            throw new Exception("OPCIÓN NO VALIDA");
+            throw new OpcionNoValidaException();
         }
         return opcion;
     }
 
     public static Personaje pedirPersonaje () {
         try {
-            System.out.println("CREACIÓN DE PERSONAJE");
+            System.out.println("VAMOS A CREAR TU PERSONAJE");
             System.out.println("Introduzca el nombre del personaje");
             String nombre = sc.nextLine();
             Raza raza = mostrarRazas();
@@ -69,7 +65,7 @@ public class Vista {
             return razas.get(idraza-1);
 
         } catch (Exception e) {
-        throw new Exception("Raza no valida");
+        throw new RazaNoValidaException();
         }
     }
 
@@ -89,7 +85,7 @@ public class Vista {
             return clases.get(idclase-1);
 
         } catch (Exception e) {
-            throw new Exception("Clase no valida");
+            throw new ClaseNoValidaException();
         }
     }
     public static Ciudad mostrarCiudades () throws Exception{
@@ -98,20 +94,95 @@ public class Vista {
         List<Ciudad> ciudades = ciudadDAO.findAll();
         int index = 1;
         for (Ciudad ciudad : ciudades){
-            System.out.println(index+". "+ciudad.getNombre());
+            System.out.println(index+". "+ciudad.getNombre()+", "+ciudad.getNivel_minimo_acceso());
             index++;
         }
-        System.out.println("Introduzca una ciudad");
+        System.out.println("Elige una ciudad");
         try {
             int idciudad = Integer.parseInt(sc.nextLine());
             return ciudades.get(idciudad-1);
 
         } catch (Exception e) {
-            throw new Exception("Ciudad no valida");
+            throw new CiudadNoValidaException();
         }
     }
 
     public static Personaje pedirPersonajeViajar (){
+        try {
+            System.out.println("VAMOS A VIAJAR A UNA CIUDAD");
+            Personaje personaje = mostrarPersonajes();
+            Ciudad ciudad = mostrarCiudades();
+            if (personaje.getNivel() < ciudad.getNivel_minimo_acceso()){
+                throw new NivelInsuficienteException();
+            }
+            personaje.setCiudad_actual(ciudad);
+            System.out.println(personaje);
+            return personaje;
+        } catch (Exception e) {
+            System.out.println("ERROR: "+e.getMessage());
+        }
+        return null;
+    }
+
+    public static Personaje mostrarPersonajes () throws Exception{
+        System.out.println("Listado de Personajes");
+        PersonajeDAO personajeDAO = new PersonajeDAO();
+        List<Personaje> personajes = personajeDAO.findAll();
+        int index = 1;
+        for (Personaje personaje : personajes){
+            System.out.println(index+". "+personaje.getNombre()+", "+personaje.getRaza().getNombre()+", "+personaje.getNivel()+", "
+                    +personaje.getOro() +", "+personaje.getCiudad_actual().getNombre());
+            index++;
+        }
+        System.out.println("Elige el personaje");
+        try {
+            int idpersonaje = Integer.parseInt(sc.nextLine());
+            return personajes.get(idpersonaje-1);
+
+        } catch (Exception e) {
+            throw new PersonajeNoValidoException();
+        }
+    }
+
+    public static Item mostrarItems() throws Exception{
+        System.out.println("Listado de Items");
+        ItemsDAO itemsDAO= new ItemsDAO();
+        List<Item> items = itemsDAO.findAll();
+        int index = 1;
+        for (Item item : items){
+            System.out.println(index+". "+item.getNombre()+", precio: "+item.getPrecio_oro());
+            index++;
+        }
+        System.out.println("Elige el numero del Item que deseas comprar");
+        try {
+            int idItem = Integer.parseInt(sc.nextLine());
+            return items.get(idItem-1);
+
+        } catch (Exception e) {
+            throw new ItemNoValidoException();
+        }
+    }
+
+    public static Personaje comprarItem(){
+        System.out.println("VAMONOS DE COMPRAS");
+        int unidades = 0;
+        try {
+            Personaje personaje = mostrarPersonajes();
+            Item item = mostrarItems();
+            System.out.println("¿Cuantas unidades deseas comprar?");
+            try {
+                unidades = Integer.parseInt(sc.nextLine());
+            }catch (Exception e) {
+                throw new OpcionNumeroException();
+            }
+            int cantidadPagar = item.getPrecio_oro() * unidades;
+
+            if (personaje.getOro() < cantidadPagar){
+                throw new FondosInsuficientesException();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
 
         return null;
