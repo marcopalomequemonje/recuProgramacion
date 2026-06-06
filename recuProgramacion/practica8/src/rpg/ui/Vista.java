@@ -3,6 +3,7 @@ package rpg.ui;
 import rpg.dao.*;
 import rpg.exception.*;
 import rpg.model.*;
+import rpg.utils.Log;
 
 import java.util.List;
 import java.util.Scanner;
@@ -45,6 +46,7 @@ public class Vista {
             Personaje personaje = new Personaje(0,nombre,nivel,oro,vida,raza,clase,ciudad);
             return personaje;
         } catch (Exception e) {
+            Log.registrar("ERROR AL PEDIR EL PERSONAJE");
             System.out.println("ERROR: "+e.getMessage());
         }
         return null;
@@ -88,7 +90,7 @@ public class Vista {
             throw new ClaseNoValidaException();
         }
     }
-    public static Ciudad mostrarCiudades () throws Exception{
+    public static Ciudad mostrarCiudades () throws CiudadNoValidaException{
         System.out.println("Listado de Ciudades");
         CiudadDAO ciudadDAO = new CiudadDAO();
         List<Ciudad> ciudades = ciudadDAO.findAll();
@@ -119,6 +121,7 @@ public class Vista {
             System.out.println(personaje);
             return personaje;
         } catch (Exception e) {
+            Log.registrar("ERROR AL VIAJAR");
             System.out.println("ERROR: "+e.getMessage());
         }
         return null;
@@ -180,7 +183,14 @@ public class Vista {
             if (personaje.getOro() < cantidadPagar){
                 throw new FondosInsuficientesException();
             }
+        } catch (OpcionNumeroException e) {
+            Log.registrar("ERROR DE NUMERO DE OPCION ERRONEO");
+            System.out.println(e.getMessage());
+        } catch (FondosInsuficientesException e) {
+            Log.registrar("ERROR DE FONDOS INSUFICIENTES");
+            System.out.println(e.getMessage());
         } catch (Exception e) {
+            Log.registrar("ERROR AL COMPRAR ITEM");
             System.out.println(e.getMessage());
         }
 

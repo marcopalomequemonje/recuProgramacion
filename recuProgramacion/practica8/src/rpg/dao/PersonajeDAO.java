@@ -7,10 +7,7 @@ import rpg.model.Personaje;
 import rpg.model.Raza;
 import rpg.utils.ConexionDB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +50,12 @@ public class PersonajeDAO {
             preparedStatement.setInt(4,personaje.getVida_actual());
             preparedStatement.setInt(5,personaje.getRaza().getId());
             preparedStatement.setInt(6,personaje.getClase().getId());
-            preparedStatement.setInt(7,personaje.getCiudad_actual().getId());
+            if (personaje.getCiudad_actual() == null){
+                preparedStatement.setNull(7, Types.INTEGER);
+            }
+            else {
+                preparedStatement.setInt(7,personaje.getCiudad_actual().getId());
+            }
             preparedStatement.setInt(8,personaje.getId());
             int cambios = preparedStatement.executeUpdate();
         } catch (SQLException e) {
